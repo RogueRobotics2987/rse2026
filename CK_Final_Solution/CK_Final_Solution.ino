@@ -23,14 +23,14 @@ void setup() {
   // initialize output pins
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(LED_0, OUTPUT);
-  pinMode(LED_1, OUTPUT);
+  pinMode(LED_1, OUTPUT); // external LED
   pinMode(LED_2, OUTPUT);
   pinMode(LED_3, OUTPUT);
 
   // initialize input pins
   pinMode(SW_0, INPUT);
-  pinMode(SW_1, INPUT);
-  pinMode(SW_2, INPUT);
+  pinMode(SW_1, INPUT); // external push button
+  pinMode(SW_2, INPUT); // prox sensor
   pinMode(SW_3, INPUT);
   pinMode(SW_4, INPUT);
   pinMode(POT_1, INPUT);
@@ -41,9 +41,9 @@ void setup() {
 
 bool test_combination(int combo){
   int pot_val = analogRead(POT_1);            // reads the value of the potentiometer (value between 0 and 1023)
-  pot_val = map(val, 0, 1023, 0, 1); 
+  pot_val = map(pot_val, 0, 1023, 0, 1); 
 
-  if (digitalRead(SW_1) && pot_val == comb0){
+  if (digitalRead(SW_1) && pot_val == combo){
     return true;
   } else{
     return false;
