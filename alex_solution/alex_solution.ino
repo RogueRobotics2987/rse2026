@@ -20,6 +20,8 @@ const int OPEN_POS = 90;
 
 int POT_1 = 26;
 
+int state = 0;
+
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize output pins
@@ -44,13 +46,12 @@ void setup() {
 
 int read_pot(){
     int val = analogRead(POT_1);
-    return map(val, 0, 123, 0, 2);
+    return map(val, 0, 1023, 0, 2);
 }
 
 bool test_pot_value (int target){
     if (digitalRead(SW_0)){
-        int  = read_pot();
-        if (pot == target){
+        if (read_pot() == target){
             return true;
         }
     }
@@ -58,7 +59,7 @@ bool test_pot_value (int target){
 }
 
 void lock_lid(){
-    servo_obj.write(OPEN_POS);
+    servo_obj.write(CLOSED_POS);
 }
 
 void unlock_lid(){
@@ -66,50 +67,47 @@ void unlock_lid(){
 }
 
 bool test_lid_open(){
-    return digitalRead(SW_1)
+    return digitalRead(SW_1);
 }
 
-int next_state(){
+void next_state(){
     digitalWrite(LED_1, HIGH);
     delay(250);
     digitalWrite(LED_1, LOW);
-    return state + 1;
+    state++;
 }
 
-int reset_state(){
+void reset_state(){
     for(int i = 0; i < 3; i++ ){
         digitalWrite(LED_1, HIGH);
         delay(100);
         digitalWrite(LED_1, LOW);
     }
-
-    return 0;
+    state = 0;
 }
 
 
 // the loop function runs over and over again forever
 void loop() {
 
-  int state = 0;
-
   // state 0 -> 1 - first combo
   if (state == 0 && test_pot_value(0)){
-    state = next_state();
+    next_state();
   // state 1 -> 2 - second combo
   } else if (state == 1 && test_pot_value(1)){
-    state = next_state();
+    next_state();
   // state 2 -> 3 - third combo
   } else if (state == 2 && test_pot_value(2)){
-    state = next_state();
+    next_state();
   // state 3 -> 4 - unlock state
   } else if (state == 3){
-    state = next_state();
+    next_state();
     unlock_lid();
     delay(500);
   // state 4 -> 5 - lid closed
   } else if (state == 4 && !test_lid_open()){
     lock_lid();
-    state = next_state();
+    next_state();
     state = 0;
   }
 
