@@ -18,7 +18,6 @@ Servo servo_obj;
 const int CLOSED_POS = 0;
 const int OPEN_POS = 90;
 
-
 int POT_1 = 26;
 
 // the setup function runs once when you press reset or power the board
@@ -31,7 +30,7 @@ void setup() {
   pinMode(LED_3, OUTPUT);
 
   // initialize input pins
-  pinMode(SW_0, INPUT); // external pushbotton
+  pinMode(SW_0, INPUT); // external pushbutton
   pinMode(SW_1, INPUT); // IR sensor
   pinMode(SW_2, INPUT);
   pinMode(SW_3, INPUT);
@@ -45,17 +44,17 @@ void setup() {
 
 int read_pot(){
     int val = analogRead(POT_1);
-    return map(val, 0, 123, 0, 180);
+    return map(val, 0, 123, 0, 2);
 }
 
-bool test_pot_value (int target_low, int target_high){
+bool test_pot_value (int target){
     if (digitalRead(SW_0)){
         int  = read_pot();
-        if (pot > target_low && pot < target_high){
-            return true
+        if (pot == target){
+            return true;
         }
     }
-    return false
+    return false;
 }
 
 void lock_lid(){
@@ -94,18 +93,19 @@ void loop() {
   int state = 0;
 
   // state 0 -> 1 - first combo
-  if (state == 0 && test_pot_value(45, 90)){
+  if (state == 0 && test_pot_value(0)){
     state = next_state();
   // state 1 -> 2 - second combo
-  } else if (state == 1 && test_pot_value(90, 180)){
+  } else if (state == 1 && test_pot_value(1)){
     state = next_state();
   // state 2 -> 3 - third combo
-  } else if (state == 2 && test_pot_value(90, 180)){
+  } else if (state == 2 && test_pot_value(2)){
     state = next_state();
   // state 3 -> 4 - unlock state
   } else if (state == 3){
     state = next_state();
     unlock_lid();
+    delay(500);
   // state 4 -> 5 - lid closed
   } else if (state == 4 && !test_lid_open()){
     lock_lid();
@@ -113,11 +113,5 @@ void loop() {
     state = 0;
   }
 
-
-
-
-  test_led();
-  test_switch();
-  test_servo_pot();
   delay(1);
 }
