@@ -43,21 +43,21 @@ bool led_state = HIGH;
 void test_led(){
   if (led_counter > 1000){
     led_counter = 0;
-    led_state = !led_state;
+    led_state = !led_state; // toggles led light on/off
     digitalWrite(LED_BUILTIN, led_state);
   }
-  led_counter++;
+  led_counter++; // adds 1 to the counter every time the function is called
 }
 
 void test_switch(){
-  if (digitalRead(SW_0)){
+  if (digitalRead(SW_0)){ // if switch 0 = true toggle light
     digitalWrite(LED_0, HIGH);
   }
   else{
     digitalWrite(LED_0, LOW);
   }
 
-  if (digitalRead(SW_1) || !digitalRead(SW_2)){
+  if (digitalRead(SW_1) || !digitalRead(SW_2)){ //if switch 1 = true or switch 2 = false toggle light
     digitalWrite(LED_1, HIGH);
   } 
   else {
@@ -76,5 +76,5 @@ void loop() {
   test_led();
   test_switch();
   test_servo_pot();
-  delay(1);
+  delay(1); // sleeps for 1 millisecond
 }
