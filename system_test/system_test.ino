@@ -35,7 +35,7 @@ void setup() {
   pinMode(POT_1, INPUT);
 
   // initialize servo
-  servo_obj.attach(SERVO_1);
+  servo_obj.attach(SERVO_1, 700, 2400);
 }
 
 int led_counter = 0;
