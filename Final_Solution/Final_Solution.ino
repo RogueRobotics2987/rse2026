@@ -1,25 +1,25 @@
 #include <Servo.h>
 
 // Input GPIO Pins
-const int LED_0 = 21;
-const int LED_1 = 0;
-const int LED_2 = 1;
-const int LED_3 = 2;
-const int POT_1 = 26;
-const int IR_1 = 16;
+const int LED_0   = 21;
+const int LED_1   = 0;  // Green LED
+const int LED_2   = 1;  // Red LED
+const int LED_3   = 2;
+const int POT_1   = 26; // Potentiometer
+const int IR_1    = 16; // Lid Sensor
 
 // Output GPIO Pins
-const int SW_0 = 20;
-const int SW_1 = 17;
-const int SW_2 = 18;
-const int SW_3 = 19;
-const int SERVO_1 = 3;
+const int SW_0    = 20;
+const int SW_1    = 17; // Push Button
+const int SW_2    = 18;
+const int SW_3    = 19;
+const int SERVO_1 = 3;  // Servo Lock
 
 // Object References
-Servo servo_obj;
+Servo lock_servo;
 
 // Global Constants
-const int CLOSED_POS = 0;
+const int CLOSED_POS = 30;
 const int OPEN_POS = 90;
 
 // Global Variables
@@ -43,8 +43,8 @@ void setup() {
   pinMode(POT_1, INPUT);
 
   // Initialize servo to closed (locked) state
-  servo_obj.attach(SERVO_1, 1000, 2400);
-  servo_obj.write(CLOSED_POS);
+  lock_servo.attach(SERVO_1, 700, 2400);
+  lock_servo.write(CLOSED_POS);
 
   // Initialize serial port
   Serial.begin(9600);
@@ -57,7 +57,7 @@ bool test_combination(int combo){
 
   // Map potentiometer value to a value between 0 and 1
   int pot_val_mapped = map(pot_val, 0, 511, 0, 1);
-  Serial.println("\tMApped Pot Value: " + String(pot_val));
+  Serial.println("\tMapped Pot Value: " + String(pot_val_mapped));
 
   if (pot_val_mapped == combo){
     return true;
@@ -112,7 +112,7 @@ void fail_state(){
 
 void lid_unlock(){
   // Open lid lock
-  servo_obj.write(OPEN_POS);
+  lock_servo.write(OPEN_POS);
 
   // Signal successful open
   digitalWrite(LED_1, HIGH);
@@ -120,7 +120,7 @@ void lid_unlock(){
 
 void lid_lock(){
   // Close lid lock
-  servo_obj.write(CLOSED_POS);
+  lock_servo.write(CLOSED_POS);
 
   /********************************************
   / Signal Lock
@@ -156,8 +156,8 @@ void lid_lock(){
 void loop() {
 
   // Read input values
-  int push_button = digitalRead(SW_1);
-  int lid_sensor = digitalRead(IR_1);
+  bool push_button = digitalRead(SW_1);
+  bool lid_sensor = digitalRead(IR_1);
   Serial.println("===========================================");
   Serial.println("State: " + String(loop_state));
   Serial.println("Button: " + String(push_button));
@@ -219,12 +219,12 @@ void loop() {
   // state 5 - lid lock, reset
   } else if (loop_state == 5){
     if (lid_sensor == 0){
-      delay(1000);
+      delay(500);
       lid_lock();
       loop_state = 0;
     }
   }
 
-  // Add 1ms delay to set base loop rate;
-  delay(1);
+  // Add 100ms delay to set base loop rate;
+  delay(100);
 }
