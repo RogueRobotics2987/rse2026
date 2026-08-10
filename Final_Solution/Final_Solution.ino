@@ -1,12 +1,10 @@
 #include <Servo.h>
 
-// Input GPIO Pins
+// Output GPIO Pins
 const int LED_0   = 21;
 const int LED_1   = 0;  // Green LED
 const int LED_2   = 1;  // Red LED
 const int LED_3   = 2;
-const int POT_1   = 26; // Potentiometer
-const int IR_1    = 16; // Lid Sensor
 
 // Output GPIO Pins
 const int SW_0    = 20;
@@ -14,6 +12,8 @@ const int SW_1    = 17; // Push Button
 const int SW_2    = 18;
 const int SW_3    = 19;
 const int SERVO_1 = 3;  // Servo Lock
+const int POT_1   = 26; // Potentiometer
+const int IR_1    = 16; // Lid Sensor
 
 // Object References
 Servo lock_servo;
