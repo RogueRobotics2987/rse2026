@@ -19,8 +19,8 @@ const int IR_1    = 16; // Lid Sensor
 Servo lock_servo;
 
 // Global Constants
-const int CLOSED_POS = 30;
-const int OPEN_POS = 90;
+const int CLOSED_POS = 110;
+const int OPEN_POS = 180;
 
 // Global Variables
 int loop_state = 0;
