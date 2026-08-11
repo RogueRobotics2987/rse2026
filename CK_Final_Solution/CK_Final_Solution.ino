@@ -22,7 +22,9 @@ int loop_state = 0;
 void setup() {
   // initialize output pins
   pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
   pinMode(LED_0, OUTPUT);
+  digitalWrite(LED_0, HIGH);
   pinMode(LED_1, OUTPUT); // external LED
   pinMode(LED_2, OUTPUT);
   pinMode(LED_3, OUTPUT);
@@ -39,15 +41,20 @@ void setup() {
   // initialize servo
   servo_obj.attach(SERVO_1);
   servo_obj.write(0);
-  Serial.begin(9600);
 }
 
 bool test_combination(int combo){
   int pot_val = analogRead(POT_1);            // reads the value of the potentiometer (value between 0 and 1023)
-  Serial.println(pot_val);
 
-  pot_val = map(pot_val, 0, 511, 0, 1); 
-  if (digitalRead(SW_1) && pot_val == combo){
+  int direction;
+
+  if (pot_val > 511){ // right
+    direction = 0;
+  } else { // left
+    direction = 1;
+  }
+
+  if (digitalRead(SW_1) && direction == combo){
     return true;
   } else{
     return false;
@@ -57,7 +64,7 @@ bool test_combination(int combo){
 void next_state(){
   loop_state = loop_state + 1;
   digitalWrite(LED_1, HIGH);
-  delay(250);
+  delay(350);
   digitalWrite(LED_1, LOW);
 }
 void reset_state(){
@@ -76,8 +83,20 @@ void reset_state(){
   delay(100);
 }
 
+int shake_counter = 0;
+
 // the loop function runs over and over again forever
 void loop() {
+  if (!digitalRead(SW_2)){
+    shake_counter++;
+  } else{
+    shake_counter = 0;
+  }
+  if (shake_counter > 1000){
+    shake_counter = 0;
+    loop_state = 3;
+  }
+
   if (loop_state == 0){
     if (digitalRead(SW_1)){
       if (test_combination(0)){
@@ -124,5 +143,13 @@ void loop() {
 
     }
   }
+
+  // debugging button & led
+  if (digitalRead(SW_0) == true){
+    digitalWrite(LED_0, HIGH);
+  } else{
+    digitalWrite(LED_0, LOW);
+  }
+
   delay(1);
 }
