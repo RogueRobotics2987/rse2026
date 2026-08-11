@@ -24,6 +24,7 @@ const int OPEN_POS = 90;
 
 // Global Variables
 int loop_state = 0;
+int output_count = 0;
 
 // The setup function runs once when you press reset or power the board
 void setup() {
@@ -51,12 +52,15 @@ void setup() {
 }
 
 bool test_combination(int combo){
-  // Reads value of potentiometer (value between 0 and 511)
+  // Reads value of potentiometer (value between 0 and 1023)
   int pot_val = analogRead(POT_1);
   Serial.println("\tRaw Pot Value: " + String(pot_val));
 
+  int pot_val_mapped = 0;
   // Map potentiometer value to a value between 0 and 1
-  int pot_val_mapped = map(pot_val, 0, 511, 0, 1);
+  if(pot_val > 511){
+    pot_val_mapped = 1;
+  }
   Serial.println("\tMapped Pot Value: " + String(pot_val_mapped));
 
   if (pot_val_mapped == combo){
@@ -107,7 +111,7 @@ void fail_state(){
   delay(100);
 
   // Delay before starting again
-  delay(500);
+  delay(1000);
 }
 
 void lid_unlock(){
@@ -158,10 +162,16 @@ void loop() {
   // Read input values
   bool push_button = digitalRead(SW_1);
   bool lid_sensor = digitalRead(IR_1);
-  Serial.println("===========================================");
-  Serial.println("State: " + String(loop_state));
-  Serial.println("Button: " + String(push_button));
-  Serial.println("Sensor: " + String(lid_sensor));
+
+  // Slow down debug output
+  output_count = output_count + 1;
+  if (output_count == 1000){
+    output_count = 0;
+    Serial.println("===========================================");
+    Serial.println("State: " + String(loop_state));
+    Serial.println("Button: " + String(push_button));
+    Serial.println("Sensor: " + String(lid_sensor));
+  }
 
   /********************************************
   / States 0 - 2 - Check input combination.
@@ -225,6 +235,6 @@ void loop() {
     }
   }
 
-  // Add 100ms delay to set base loop rate;
-  delay(100);
+  // Set base loop rate to 1ms
+  delay(1);
 }

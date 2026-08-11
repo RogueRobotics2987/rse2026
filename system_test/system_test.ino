@@ -20,10 +20,12 @@ Servo servo_obj;
 
 // Global Variables
 int led_counter = 0;
+int output_counter = 0;
 bool led_state = HIGH;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
+
   // initialize output pins
   pinMode(LED_BUILTIN,  OUTPUT);
   pinMode(LED_0,        OUTPUT);
@@ -43,12 +45,14 @@ void setup() {
   // initialize servo
   servo_obj.attach(SERVO_1, 700, 2400);
 
+  // initialize serial communication
   Serial.begin(9600);
   delay(2000);
   Serial.println("Serial initialized");
 }
 
 void test_led(){
+
   if (led_counter > 1000){
     led_counter = 0;
 
@@ -61,7 +65,8 @@ void test_led(){
 }
 
 void test_switch(){
-  // if switch 0 = true toggle light
+
+  // if onboard button == true, illuminate onboard LED
   if (digitalRead(SW_0)){
     digitalWrite(LED_0, HIGH);
   }
@@ -69,7 +74,7 @@ void test_switch(){
     digitalWrite(LED_0, LOW);
   }
 
-  //if switch 1 = true toggle LED_1
+  // if pushbutton == true, illuminate LED_1
   if (digitalRead(SW_1)){
     digitalWrite(LED_1, HIGH);
   }
@@ -81,7 +86,7 @@ void test_switch(){
 void test_ir(){
 
   //if lid closed, LED_2 on, else off.
-  if (digitalRead(SW_2)) {
+  if (!digitalRead(IR_1)) {
     digitalWrite(LED_2, HIGH);
   }
   else {
@@ -89,22 +94,29 @@ void test_ir(){
   }
 }
 
-
 void test_servo_pot(){
+
   // reads the value of the potentiometer (value between 0 and 1023)
   int raw_val = analogRead(POT_1);
 
   // scale it for use with the servo (value between 0 and 180)
-  int val = map(raw_val, 0, 511, 0, 180);
+  int val = map(raw_val, 0, 1023, 0, 180);
 
   // sets the servo position according to the scaled value
   servo_obj.write(val);
-  Serial.println("raw pot value: " + String(raw_val));
-  Serial.println("map pot value: " + String(val));
+
+  // aproximately once a second, print values to serial
+  output_counter = (output_counter + 1) % 1000;
+  if(output_counter == 0){
+    Serial.println("raw pot value: " + String(raw_val));
+    Serial.println("map pot value: " + String(val));
+  }
 }
 
 // the loop function runs over and over again forever
 void loop() {
+
+  // call test functions
   test_led();
   test_switch();
   test_servo_pot();
