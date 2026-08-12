@@ -48,20 +48,20 @@ void setup() {
   lock_servo.write(CLOSED_POS);
 
   // Initialize serial port
-  Serial.begin(9600);
+  //Serial.begin(9600);
 }
 
 bool test_combination(int combo){
   // Reads value of potentiometer (value between 0 and 1023)
   int pot_val = analogRead(POT_1);
-  Serial.println("\tRaw Pot Value: " + String(pot_val));
+  //Serial.println("\tRaw Pot Value: " + String(pot_val));
 
   int pot_val_mapped = 0;
   // Map potentiometer value to a value between 0 and 1
   if(pot_val > 511){
     pot_val_mapped = 1;
   }
-  Serial.println("\tMapped Pot Value: " + String(pot_val_mapped));
+  //Serial.println("\tMapped Pot Value: " + String(pot_val_mapped));
 
   if (pot_val_mapped == combo){
     return true;
@@ -164,14 +164,14 @@ void loop() {
   bool lid_sensor = digitalRead(IR_1);
 
   // Slow down debug output
-  output_count = output_count + 1;
-  if (output_count == 1000){
-    output_count = 0;
-    Serial.println("===========================================");
-    Serial.println("State: " + String(loop_state));
-    Serial.println("Button: " + String(push_button));
-    Serial.println("Sensor: " + String(lid_sensor));
-  }
+//   output_count = output_count + 1;
+//   if (output_count == 1000){
+//     output_count = 0;
+//     Serial.println("===========================================");
+//     Serial.println("State: " + String(loop_state));
+//     Serial.println("Button: " + String(push_button));
+//     Serial.println("Sensor: " + String(lid_sensor));
+//   }
 
   /********************************************
   / States 0 - 2 - Check input combination.
